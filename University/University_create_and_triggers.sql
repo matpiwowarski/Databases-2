@@ -422,6 +422,8 @@ CREATE TRIGGER deletePersonAfterDeleteTeacher BEFORE DELETE ON Teacher
        END;//
 delimiter ;
 
+DROP TRIGGER deletePersonAfterDeleteTeacher;
+
 delimiter //
 CREATE TRIGGER deleteTeacherStudentAfterDeletePerson BEFORE DELETE ON Person
        FOR EACH ROW

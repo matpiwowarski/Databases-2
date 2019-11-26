@@ -1,0 +1,75 @@
+-- indexes
+USE mydb;
+
+ CREATE INDEX salaryIndex ON teacher(salary);
+ CREATE INDEX DayIndex ON Consultation_hours(day);
+ CREATE INDEX SalaryEmailAddressIndex ON teacher(salary, emailaddress); 
+
+-- fill tables
+CALL fill_teacher(100000); 
+CALL fill_consulation_hours(1); 
+
+-- SELECTS
+-- TEACHER 
+SELECT * FROM TEACHER; 				-- 1 * TEACHER
+EXPLAIN SELECT * FROM TEACHER; 		
+
+SELECT PERSON_id FROM TEACHER 		-- 2 Salary
+	WHERE SALARY > 3000;
+
+EXPLAIN SELECT PERSON_id FROM TEACHER 	-- salary index
+	WHERE SALARY > 3000;
+
+-- SELECT PERSON_id FROM TEACHER
+-- WHERE emailaddress LIKE 'email2%';
+    
+ EXPLAIN SELECT PERSON_id FROM TEACHER
+ 	WHERE SALARY > 3000 AND emailaddress LIKE 'email2%';
+
+ SELECT PERSON_id FROM TEACHER
+ WHERE (SALARY > 3000 OR emailaddress LIKE 'email2%');
+
+-- CONSULTATION_HOURS
+SELECT * FROM CONSULTATION_HOURS; 	-- 1 * CONSULTATION_HOURS
+EXPLAIN  SELECT * FROM CONSULTATION_HOURS; 
+
+ SELECT id FROM CONSULTATION_HOURS 	-- 2 Day
+ 	WHERE Day = 'Monday';
+ EXPLAIN SELECT id FROM CONSULTATION_HOURS -- DayIndex
+ 	WHERE Day = 'Monday';
+
+
+
+-- TEACHER & CONSULTATION_HOURS
+
+-- 1 Salary AND Day
+ SELECT t.PERSON_id, c.ID 			
+ FROM TEACHER t, CONSULTATION_HOURS c
+ WHERE t.PERSON_id = c.id
+ AND t.SALARY > 2500 AND c.Day = 'Friday';
+ 
+ EXPLAIN SELECT t.PERSON_id, c.ID 			
+ FROM TEACHER t, CONSULTATION_HOURS c
+ WHERE t.PERSON_id = c.id
+ AND t.SALARY > 2500 AND c.Day = 'Friday';
+-- 2 Salary OR Day
+ SELECT t.PERSON_id 			
+ FROM TEACHER t, CONSULTATION_HOURS c
+ WHERE t.PERSON_id = c.id
+ AND (t.SALARY > 2500 OR c.Day = 'Friday');
+ 
+EXPLAIN SELECT t.PERSON_id 				
+ FROM TEACHER t, CONSULTATION_HOURS c
+ WHERE t.PERSON_id = c.id
+ AND (t.SALARY > 2500 OR c.Day = 'Friday');
+
+-- UPDATE SALARY
+UPDATE TEACHER SET Salary = Salary * 0.9;
+--  UPDATE TEACHER SET EmailAddress = 'test@gmail.com';
+-- UPDATE DAY
+UPDATE CONSULTATION_HOURS SET Day = 'Monday';
+-- DELETE 
+DELETE FROM CONSULTATION_HOURS; 
+DELETE FROM TEACHER;
+-- DROP MYDB
+DROP DATABASE mydb;
