@@ -62,19 +62,21 @@ DROP INDEX CityDeanIndex ON FACULTY;
 DROP INDEX FacultyCityIndex ON Faculty; 
 DROP INDEX CourseExamIndex ON Course; 
 DROP INDEX PersonSexIndex ON PERSON;
+DROP INDEX FacultyDeanINdex ON Faculty;
+DROP INDEX DeanCityIndex ON Faculty;
+DROP INDEX DeanCityIndex ON Faculty;
 
 -- SELECTS:
--- LEFT, RIGHT, OUTER, FULL JOIN 4/4
 -- GROUP BY 4/4
 -- SUM COUNT 2/2 + HAVING
 -- EXIST/IN/NOT IN/ANY 1/1
 
--- 1 HAVING
+-- 1
 -- SURNAMES AND AVERAGE GRADES OF STUDENT 
 -- FROM COURSE 'Coursename1' 
--- WHO HAVE AVG > 6.0
+-- WHO HAVE AVG > 8.5
 
-select p.surname , avg(m.mark), c.name
+EXPLAIN select p.surname , avg(m.mark), c.name
 from person p 
 INNER JOIN student s ON p.id = s.PERSON_id
 INNER JOIN attendance a ON s.PERSON_id = a.STUDENT_PERSON_id
@@ -84,9 +86,9 @@ WHERE c.name LIKE 'Coursename1'
 group by p.id, c.name
 HAVING avg(m.mark) > 8.5;
 
--- 2 IN
+-- 2 
 -- THE OLDEST STUDENTS ON EACH COURSE
-select p.Surname, p.Birthdate
+EXPLAIN select p.Surname, p.Birthdate
 from person p
 where p.Birthdate IN (
 	select min(pp.birthdate) from PERSON pp 
@@ -97,11 +99,11 @@ where p.Birthdate IN (
     GROUP BY pp.id
     );
     
--- 3 COUNT 
+-- 3 
 -- MALE TEACHERS ON 'full-time' studies 
 -- WITH AT LEAST 1 CONSULTATION_HOURS IN ROOM 200 ON FRIDAYS
 
-select p.surname, COUNT(c.Day) as 'FRIDAY CONSULTATIONS'
+EXPLAIN select p.surname, COUNT(c.Day) as 'FRIDAY CONSULTATIONS'
 from person p 
 JOIN TEACHER t ON p.id = t.PERSON_id
 JOIN CONSULTATION_HOURS c ON t.PERSON_id = c.TEACHER_PERSON_id
@@ -116,9 +118,9 @@ HAVING COUNT(c.Day) > 0;
 -- 4 
 -- COURSES WITH EXAM
 -- WITH THE HIGHEST ECTS
--- WITH THE ATTENDANCE > 5
+-- WITH THE ATTENDANCE > 800
 -- ON FACULTIES IN Cork
-SELECT c.Name, c.ECTS, f.city, f.dean ,COUNT(a.id)
+EXPLAIN SELECT c.Name, c.ECTS, f.city, f.dean ,COUNT(a.id)
 FROM COURSE c
 JOIN ATTENDANCE a ON c.id = a.COURSE_id
 JOIN FACULTY f ON c.FACULTY_ID = f.id
@@ -128,4 +130,7 @@ AND c.ECTS = (
 	SELECT max(cc.ECTS) FROM COURSE cc)
 GROUP BY c.id HAVING COUNT(a.id) > 800;
 
- 
+SHOW INDEXES IN COURSE; 
+SHOW INDEXES IN ATTENDANCE; 
+SHOW INDEXES IN FACULTY; 
+SHOW INDEXES IN PERSON; 
