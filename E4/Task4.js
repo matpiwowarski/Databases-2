@@ -13,3 +13,4 @@ db.getCollection("lodging").find(
     }
 );
 
+db.lodging.aggregate( [ { $project : { "host.name" : 1 , "host.surname" : 1, "host.age": 1 } } ] );
